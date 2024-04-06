@@ -1,0 +1,58 @@
+CREATE DATABASE INVENTORY
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_general_ci;
+
+CREATE TABLE Company (
+    nit VARCHAR(20) PRIMARY KEY,
+    company_name VARCHAR(100) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    phone VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Product (
+    id BINARY(16) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    characteristics TEXT,
+    price_usd DECIMAL(10,2),
+    price_eur DECIMAL(10,2),
+    price_pesos DECIMAL(10,2),
+    company_nit VARCHAR(20) NOT NULL,
+    FOREIGN KEY (company_nit) REFERENCES Company(nit)
+);
+
+CREATE TABLE Category (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Product_Category (
+    product_id BINARY(16) NOT NULL,
+    category_id BIGINT NOT NULL,
+    PRIMARY KEY (product_id, category_id),
+    FOREIGN KEY (product_id) REFERENCES Product(id),
+    FOREIGN KEY (category_id) REFERENCES Category(id)
+);
+
+CREATE TABLE Customer (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20)
+);
+
+CREATE TABLE `Order` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_date DATETIME NOT NULL,
+    customer_id BIGINT NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES Customer(id)
+);
+
+CREATE TABLE Order_Product (
+    order_id BIGINT NOT NULL,
+    product_id BINARY(16) NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY (order_id, product_id),
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
+    FOREIGN KEY (product_id) REFERENCES Product(id)
+);
